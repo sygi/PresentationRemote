@@ -76,5 +76,17 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
+	protected void onDestroy(){
+		super.onDestroy();
+		Log.d("sygi", "finishing");
+		if (out != null) //connected
+			out.println("disconnect");
+		try {
+			s.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

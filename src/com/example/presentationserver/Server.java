@@ -53,6 +53,8 @@ public class Server {
 			robot.keyRelease(KeyEvent.VK_UP);
 		} else if (command.equals("connected")){
 			out.println("ok");
+		} else if (command.equals("disconnect")){
+			System.out.printf("Client disconnected, waiting for another one\n");
 		} else {
 			System.out.printf("Unknown command: %s\n", command);
 		}
@@ -67,5 +69,8 @@ public class Server {
 		} 
 		} catch (IOException e){
 		}
+		System.out.printf("client disconnected\n");
+		estabilishConnection();
+		listen();
 	}
 }
