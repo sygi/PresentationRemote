@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
 		} catch (IOException e) {
 			System.out.printf("IOException");
 			e.printStackTrace();
+		} catch (Exception e){
+			System.out.println("Inny dziwny blad");
 		}
 		try {
 		out = new PrintWriter(s.getOutputStream(), true);
@@ -36,7 +38,12 @@ public class MainActivity extends Activity {
 		} catch (IOException e){
 			System.out.printf("Error creating i/o from socket\n");
 		}
-		out.write("costam\n");
+		out.println("costam");
+		try {
+			t.setText(in.readLine());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
