@@ -8,21 +8,24 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
 	private Socket s;
 	private PrintWriter out;
 	private BufferedReader in;
+	private String serverIP;
+	private int port;
+	private Intent serverInfo;
 	private void connect(){
 		try {
-		s = new Socket("192.168.1.105", 4444);
+		s = new Socket(serverIP, port);
 		} catch (UnknownHostException e){
 			System.out.printf("Unknown host\n");
 		} catch (IOException e) {
@@ -37,16 +40,12 @@ public class MainActivity extends Activity {
 		} catch (IOException e){
 			System.out.printf("Error creating i/o from socket\n");
 		}
+		out.println("connected");
 	}
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		//TextView t = (TextView)this.findViewById(R.id.napis);
+	private void setButtons(){
 		Button next = (Button)this.findViewById(R.id.button2);
 		Button prev = (Button)this.findViewById(R.id.button1);
-		connect();
-		Log.d("sygi", "Connected, setting listeners");
+
 		next.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -60,14 +59,21 @@ public class MainActivity extends Activity {
 				out.println("prev");
 			}
 		});
-		Log.d("sygi", "Listeners set");
-		out.println("connected");
+		
+		//debug
 		try {
 			String get = in.readLine();
 			Log.d("sygi", "Client get:" + get);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		serverInfo = new Intent(this, ConnectActivity.class);
+		startActivityForResult(serverInfo, 41);
 	}
 
 	@Override
@@ -76,6 +82,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
+	
 	protected void onDestroy(){
 		super.onDestroy();
 		Log.d("sygi", "finishing");
@@ -88,5 +95,19 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 41){ //from ConnectActivity
+			serverIP = data.getStringExtra("IP");
+			if (serverIP.equals("..."))
+				serverIP = "192.168.1.105"; //debug option
+			port = data.getIntExtra("port", 4444);
+			connect();
+			Log.d("sygi", "Connected, setting buttons");
+			setButtons();
+		}
+	}
+	
 
 }
