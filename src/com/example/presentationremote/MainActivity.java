@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -98,8 +99,16 @@ public class MainActivity extends Activity {
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		Log.d("sygi", "onActivityResult");
 		if (requestCode == 41){ //from ConnectActivity
+			Log.d("sygi", "reqCode matches");
+			if (data == null){
+				Log.d("sygi", "no data - finishing");
+				return;
+			}
+			Log.d("sygi", "im here");
 			serverIP = data.getStringExtra("IP");
+			Log.d("sygi", "getIp");
 			if (serverIP.equals("..."))
 				serverIP = "192.168.1.105"; //debug option
 			port = data.getIntExtra("port", 4444);

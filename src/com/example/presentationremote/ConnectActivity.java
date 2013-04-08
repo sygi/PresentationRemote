@@ -14,7 +14,7 @@ public class ConnectActivity extends Activity {
 
 	Intent my;
 	private void packAndSend(){
-		my = new Intent();
+	//	my = new Intent();
 		String ip = "";
 		EditText e1 = (EditText)this.findViewById(R.id.ip1),
 				 e2 = (EditText)this.findViewById(R.id.ip2),
@@ -29,9 +29,19 @@ public class ConnectActivity extends Activity {
 		my.putExtra("port", Integer.parseInt(port)); //casting :P
 		Log.d("sygi", "set extra");
 	}
+	protected void onDestroy(){
+		super.onDestroy();
+		if (my.getStringExtra("IP") == null){
+			Log.d("sygi", "cancelled");
+			setResult(RESULT_CANCELED, my);
+		}
+		Log.d("sygi", "connectA destroy");
+		
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		my = new Intent();
 		setContentView(R.layout.activity_connect);
 		Button b = (Button)this.findViewById(R.id.button1);
 		b.setOnClickListener(new View.OnClickListener() {
